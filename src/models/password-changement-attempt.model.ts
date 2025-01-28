@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Base } from "./base.model";
 
+
 @Schema({ timestamps: true, versionKey: false })
 export class PasswordChangementAttempt extends Base {
   _id?: string;
