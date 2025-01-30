@@ -8,6 +8,7 @@ import {
   Matches,
   MinLength
 } from "class-validator";
+import { softDeletePlugin } from "soft-delete-plugin-mongoose";
 
 export enum UserRoleEnum {
   admin = "admin",
@@ -80,4 +81,4 @@ export class User extends Base {
 }
 
 export const UserSchema =
-  SchemaFactory.createForClass(User);
+  SchemaFactory.createForClass(User).plugin(softDeletePlugin);

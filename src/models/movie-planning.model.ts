@@ -3,6 +3,7 @@ import * as mongoose from "mongoose";
 import { Base } from "../generics/db/base.model";
 import { Cinema } from "./cinema.model";
 import { IsNotEmpty, IsNumber } from "class-validator";
+import { softDeletePlugin } from "soft-delete-plugin-mongoose";
 
 @Schema({ timestamps: true, versionKey: false })
 export class MoviePlanning extends Base {
@@ -27,4 +28,4 @@ export class MoviePlanning extends Base {
   cinema: Cinema;
 }
 
-export const MoviePlanningSchema =SchemaFactory.createForClass(MoviePlanning);
+export const MoviePlanningSchema =SchemaFactory.createForClass(MoviePlanning).plugin(softDeletePlugin);

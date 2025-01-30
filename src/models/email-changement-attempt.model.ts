@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Base } from "../generics/db/base.model";
+import { softDeletePlugin } from "soft-delete-plugin-mongoose";
 
 @Schema({ timestamps: true, versionKey: false })
 export class EmailChangementAttempt extends Base {
@@ -22,4 +23,5 @@ export class EmailChangementAttempt extends Base {
   }
 }
 
-export const EmailChangementAttemptSchema = SchemaFactory.createForClass(EmailChangementAttempt);
+export const EmailChangementAttemptSchema = SchemaFactory.createForClass(
+  EmailChangementAttempt).plugin(softDeletePlugin);
