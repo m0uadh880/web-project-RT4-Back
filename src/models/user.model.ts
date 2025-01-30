@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Base } from "./base.model";
+import { Base } from "../generics/db/base.model";
 import {
   IsEmail,
   IsNotEmpty,

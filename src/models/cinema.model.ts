@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import * as mongoose from "mongoose";
-import { Base } from "./base.model";
+import { Base } from "../generics/db/base.model";
 
 @Schema({ timestamps: true, versionKey: false })
 export class Cinema extends Base {
