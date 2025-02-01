@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Base } from "../generics/db/base.model";
+import { softDeletePlugin } from "soft-delete-plugin-mongoose";
 
 
 @Schema({ timestamps: true, versionKey: false })
@@ -23,4 +24,5 @@ export class PasswordChangementAttempt extends Base {
   }
 }
 
-export const PasswordChangementAttemptSchema = SchemaFactory.createForClass(PasswordChangementAttempt);
+export const PasswordChangementAttemptSchema = SchemaFactory.createForClass(
+  PasswordChangementAttempt).plugin(softDeletePlugin);
