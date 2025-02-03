@@ -7,12 +7,16 @@ import { AuthenticationTokenPayloadDto } from "./dto/payload.dto";
 import { JwtService } from "@nestjs/jwt";
 import { AuthenticationResponseDto } from "./dto/login-response.dto";
 import { UserService } from "./user.service";
+import { MailService } from "src/mail/mail.service";
+import { EmailConfirmationPayloadDto } from "./dto/email-confirmation-payload.dto";
+
 
 @Injectable()
 export class AuthenticationService {
   constructor(
     private readonly userRepository: UserService,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService
   ) {}
 
   public async login(loginData: LoginDto): Promise<AuthenticationResponseDto> {
@@ -63,6 +67,12 @@ export class AuthenticationService {
       gender
     };
     const newUser = await this.userRepository.create(user);
+    const emailPayload: EmailConfirmationPayloadDto = {
+      username,
+      firstname,
+      lastname
+    };
+    await this.mailService.mailConfirmation(emailPayload, email);
     return this.createJwtToken(newUser);
   }
 

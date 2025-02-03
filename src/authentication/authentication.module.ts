@@ -8,6 +8,8 @@ import { AuthenticationController } from "./authentication.controller";
 import { AuthenticationService } from "./authentication.service";
 import { UserService } from "./user.service";
 import { JwtStrategy } from "./strategy/jwt.strategy";
+import { MailModule } from "src/mail/mail.module";
+import { EmailConfirmationService } from "./email-confirmation.service";
 
 @Module({
   imports: [
@@ -22,11 +24,13 @@ import { JwtStrategy } from "./strategy/jwt.strategy";
         expiresIn: 86400
       }
     }),
+    MailModule
   ],
   controllers: [AuthenticationController],
   providers: [
     UserService,
     AuthenticationService,
+    EmailConfirmationService,
     JwtStrategy
   ],
   exports: [UserService, AuthenticationService]
