@@ -9,7 +9,7 @@ import { PlanningModule } from './planning/planning.module';
 import { CinemaModule } from "./cinema/cinema.module";
 import { MailModule } from "./mail/mail.module";
 import { MovieModule } from "./movie/movie.module";
-//import { ServeStaticModule } from "@nestjs/serve-static";
+import { ServeStaticModule } from "@nestjs/serve-static";
 import { MulterModule } from "@nestjs/platform-express";
 import { uploadDestination } from "./utilities/upload";
 import { HomeModule } from "./home/home.module";
@@ -28,9 +28,9 @@ import { HomeModule } from "./home/home.module";
     MovieModule,
     AccountsModule,
     MulterModule.register({}),
-    //ServeStaticModule.forRoot({
-    //  rootPath: uploadDestination
-    //}),
+    ServeStaticModule.forRoot({
+     rootPath: uploadDestination
+    }),
     PlanningModule,
     HomeModule
   ],

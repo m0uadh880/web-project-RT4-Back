@@ -7,7 +7,7 @@ import {
   Patch,
   Post,
   Put,
-  Query
+  Query,
 } from "@nestjs/common";
 import { lastValueFrom } from "rxjs";
 
@@ -23,7 +23,7 @@ import { PlanningFiltersByMovie } from "./dtos/request/planning-filters-by-movie
 import { PlanningFilters } from "./dtos/request/planning-filters.dto";
 import { UpdatePlanningDto } from "./dtos/request/update-planning.dto";
 import { PlanningService } from "./planning.service";
-import { MovieDetails } from "../movie/dto/movie-details";
+import { MovieDetails } from "src/movie/dto/movie-details";
 
 // @UseGuards(AuthGuard('jwt'), RoleAuthGuard)
 @Controller("plannings")
@@ -35,23 +35,21 @@ export class PlanningController {
 
   @Get("bycinema")
   async listPlanningsByCinema(@Query() planningFilters: PlanningFilters) {
-    const plannings = await this.planningService.findAll(
-      {
-        start: {
-          $gte: planningFilters.start
-        },
-        end: {
-          $lte: planningFilters.end
-        },
-        cinema: planningFilters.id
-      },
-      {
-        createdAt: 0,
-        updatedAt: 0,
-        deletedAt: 0,
-        isDeleted: 0
-      }
-    );
+    const startDate = new Date(planningFilters.start);
+    const endDate = new Date(planningFilters.end);
+
+    const allPlannings = await this.planningService.findAll();
+
+    const plannings = allPlannings.filter((planning) => {
+      const planningStart = new Date(planning.start);
+      const planningEnd = new Date(planning.end);
+
+      return (
+        planningStart >= startDate &&
+        planningEnd <= endDate &&
+        planning.cinema.toString() === planningFilters.id
+      );
+    });
 
     const uniqueMovies = plannings
       .map((planning) => planning.movieId)
@@ -77,8 +75,8 @@ export class PlanningController {
         movie: {
           id: planning.movieId,
           poster_path: moviesResults[index].poster_path,
-          title: moviesResults[index].title
-        }
+          title: moviesResults[index].title,
+        },
       });
     });
     return alteredPlannings;
@@ -88,24 +86,23 @@ export class PlanningController {
   async listPlanningsByMovie(
     @Query() planningFilters: PlanningFiltersByMovie
   ): Promise<MoviePlanning[]> {
-    return this.planningService.findAll(
-      {
-        start: {
-          $gte: planningFilters.start
-        },
-        end: {
-          $lte: planningFilters.end
-        },
-        movieId: planningFilters.id
-      },
-      {
-        createdAt: 0,
-        updatedAt: 0,
-        deletedAt: 0,
-        isDeleted: 0
-      },
+    const startDate = new Date(planningFilters.start);
+    const endDate = new Date(planningFilters.end);
+
+    const allPlannings = await this.planningService.findAll(
+      {},
+      {},
       { path: "cinema", select: ["_id", "name", "imageUrl"] }
     );
+
+    const plannings = allPlannings.filter((planning) => {
+      const planningStart = new Date(planning.start);
+      const planningEnd = new Date(planning.end);
+
+      return planningStart >= startDate && planningEnd <= endDate;
+    });
+
+    return plannings;
   }
 
   @Role(UserRoleEnum.user, UserRoleEnum.admin)
@@ -116,7 +113,7 @@ export class PlanningController {
       createdAt: 0,
       updatedAt: 0,
       deletedAt: 0,
-      isDeleted: 0
+      isDeleted: 0,
     });
   }
 
@@ -175,7 +172,7 @@ export class PlanningController {
         alteredPlannings.push({
           ...attrs,
           movieId: movies[index].id,
-          cinema: "620c3bb7c05f26828c613249"
+          cinema: "",
         });
     });
 
